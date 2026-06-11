@@ -843,7 +843,7 @@
     <div class="thanks" id="thanks">
       <div class="heart-big">💜</div>
       <h2>You're <span class="accent">in.</span></h2>
-      <p>Thanks for spending three minutes on this. We'll let you know when the first retreat gets real, and you helped shape it.</p>
+      <p>Thanks for spending three minutes on this. You helped shape what the first retreat will actually be.</p>
     </div>
 
     <p class="footer">Outer Snarkness · A Kirsten &amp; Megan project · An Ex-Mormon Snark joint</p>
@@ -933,9 +933,75 @@
       otherBox.classList.toggle('visible', e.target.checked);
     });
 
-    // ───── Submit handler with shake + confetti on success ─────
-    form.addEventListener('submit', e => {
+    // ───── Submit handler: validate, POST to /api/submit, confetti on success ─────
+    function fireConfetti() {
+      const colors = ['#FF4E81', '#2A1B4F', '#FFC857', '#06B6D4', '#FF4E81'];
+      for (let i = 0; i < 30; i++) {
+        const c = document.createElement('span');
+        c.className = 'confetti';
+        c.style.left = (Math.random() * 100) + '%';
+        c.style.background = colors[i % colors.length];
+        c.style.animationDelay = (Math.random() * 0.6) + 's';
+        c.style.animationDuration = (1.8 + Math.random() * 1.2) + 's';
+        thanks.appendChild(c);
+      }
+    }
+
+    function collectFormData() {
+      const fd = new FormData(form);
+      const payload = {};
+      // Single-value fields
+      ['firstName','email','interest','travel','location','length','price','lodging','worth','concerns','extras','likelihood','activities_other'].forEach(k => {
+        const v = fd.get(k);
+        if (v != null) payload[k] = (typeof v === 'string') ? v.trim() : v;
+      });
+      // Multi-value: activities checkboxes
+      payload.activities = fd.getAll('activities').filter(Boolean);
+      return payload;
+    }
+
+    function showErrorBanner(msg) {
+      let banner = document.getElementById('error-banner');
+      if (!banner) {
+        banner = document.createElement('div');
+        banner.id = 'error-banner';
+        banner.style.cssText = 'margin:18px auto 0;max-width:520px;padding:14px 18px;border-radius:14px;background:#FFE0EA;color:#8A1338;border:1px solid #FF4E81;font-size:14px;text-align:center;font-weight:500;';
+        const submitRow = document.querySelector('.submit-row');
+        if (submitRow && submitRow.parentNode) {
+          submitRow.parentNode.insertBefore(banner, submitRow);
+        } else {
+          form.appendChild(banner);
+        }
+      }
+      banner.textContent = msg;
+      banner.scrollIntoView({behavior:'smooth', block:'center'});
+    }
+
+    function clearErrorBanner() {
+      const banner = document.getElementById('error-banner');
+      if (banner) banner.remove();
+    }
+
+    function showSuccessState(id) {
+      form.style.display = 'none';
+      progressEl.style.display = 'none';
+      // Append confirmation ID line to the thanks card if we have one.
+      if (id) {
+        const existing = thanks.querySelector('.confirm-id');
+        if (existing) existing.remove();
+        const idLine = document.createElement('p');
+        idLine.className = 'confirm-id';
+        idLine.style.cssText = 'margin-top:18px;color:var(--ink-soft);font-size:12px;letter-spacing:0.06em;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;';
+        idLine.textContent = 'Confirmation ID: ' + id;
+        thanks.appendChild(idLine);
+      }
+      thanks.classList.add('visible');
+      thanks.scrollIntoView({behavior:'smooth', block:'start'});
+    }
+
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
+      clearErrorBanner();
       const required = ['interest','travel','location','length','price','lodging','activities','worth','concerns','likelihood'];
       let missing = [];
       required.forEach(name => {
@@ -956,21 +1022,45 @@
         }
         return;
       }
-      // Success, confetti
-      const colors = ['#FF4E81', '#2A1B4F', '#FFC857', '#06B6D4', '#FF4E81'];
-      for (let i = 0; i < 30; i++) {
-        const c = document.createElement('span');
-        c.className = 'confetti';
-        c.style.left = (Math.random() * 100) + '%';
-        c.style.background = colors[i % colors.length];
-        c.style.animationDelay = (Math.random() * 0.6) + 's';
-        c.style.animationDuration = (1.8 + Math.random() * 1.2) + 's';
-        thanks.appendChild(c);
+
+      // Need at least a name or email for the lead to be useful.
+      const firstName = (form.querySelector('[name="firstName"]')?.value || '').trim();
+      const email = (form.querySelector('[name="email"]')?.value || '').trim();
+      if (!firstName && !email) {
+        const card = form.querySelector('[name="firstName"]')?.closest('.card');
+        if (card) {
+          card.scrollIntoView({behavior:'smooth', block:'center'});
+          card.classList.remove('shake');
+          void card.offsetWidth;
+          card.classList.add('shake');
+          setTimeout(() => card.classList.remove('shake'), 600);
+        }
+        showErrorBanner('Drop a name or an email so we know who you are.');
+        return;
       }
-      form.style.display = 'none';
-      progressEl.style.display = 'none';
-      thanks.classList.add('visible');
-      thanks.scrollIntoView({behavior:'smooth', block:'start'});
+
+      const payload = collectFormData();
+      const originalText = submitBtn.textContent;
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending...';
+
+      try {
+        const res = await fetch('/api/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) throw new Error('submit_failed_' + res.status);
+        const data = await res.json();
+        if (!data || data.ok !== true) throw new Error('submit_rejected');
+        fireConfetti();
+        showSuccessState(data.id);
+      } catch (err) {
+        console.error('submit failed', err);
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+        showErrorBanner('Something went sideways. Try again in a moment, or text us if it keeps failing.');
+      }
     });
 
     document.getElementById('clearBtn').addEventListener('click', () => {
