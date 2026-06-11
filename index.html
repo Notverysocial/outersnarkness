@@ -1028,20 +1028,39 @@
           observer.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.12, rootMargin: '0px 0px -80px 0px' });
+    }, { threshold: 0.18, rootMargin: '0px 0px -160px 0px' });
 
     document.querySelectorAll('.scroll-card').forEach((el, i) => {
       el.classList.add('scroll-hidden');
       el.dataset.idx = i;
       observer.observe(el);
     });
-    // Safety fallback: if anything is still hidden after 1.5s (e.g. observer never fired
-    // because the element was scrolled past on initial load), force-reveal it.
-    setTimeout(() => {
-      document.querySelectorAll('.scroll-hidden:not(.visible)').forEach(el => {
-        el.classList.add('visible');
+    // True safety fallback (browser support edge case only): reveal anything still
+    // hidden after 30s OR if IntersectionObserver is unavailable. Normal users scroll
+    // and the observer handles things, no premature reveal of off-screen cards.
+    if (typeof IntersectionObserver === 'undefined') {
+      document.querySelectorAll('.scroll-hidden').forEach(el => el.classList.add('visible'));
+    } else {
+      // Reveal cards that are ALREADY in the initial viewport so the user sees
+      // the first card or two immediately, without waiting for any scroll event.
+      requestAnimationFrame(() => {
+        document.querySelectorAll('.scroll-hidden:not(.visible)').forEach(el => {
+          const rect = el.getBoundingClientRect();
+          const vh = window.innerHeight || document.documentElement.clientHeight;
+          if (rect.top < vh * 0.85 && rect.bottom > vh * 0.10) {
+            el.classList.add('visible');
+            observer.unobserve(el);
+          }
+        });
       });
-    }, 1500);
+      // Emergency fallback only: if for some reason the observer goes silent for 30s,
+      // reveal stragglers so nothing stays invisible forever.
+      setTimeout(() => {
+        document.querySelectorAll('.scroll-hidden:not(.visible)').forEach(el => {
+          el.classList.add('visible');
+        });
+      }, 30000);
+    }
 
     // ───── "Other" reveal ─────
     otherTrigger.querySelector('input').addEventListener('change', e => {
