@@ -677,81 +677,27 @@
       color: var(--cream, #FAF6F0);
     }
 
-    /* Site header strip, cosmic version */
-    .site-strip.cosmic {
+    /* Logo at top, centered, transparent on cream */
+    .logo-top {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      padding: 18px 22px;
-      border: 1px solid rgba(255, 217, 232, 0.12);
-      border-radius: 18px;
-      margin-bottom: 36px;
-      box-shadow: 0 12px 36px -16px rgba(0,0,0,0.45);
-      overflow: hidden;
-    }
-    .site-strip .logo-wrap {
-      position: relative;
-      display: inline-flex;
-      align-items: center;
       justify-content: center;
-      padding: 4px 14px;
+      align-items: center;
+      padding: 56px 24px 16px;
     }
-    .site-strip .logo-wrap::before {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 140%;
-      height: 38%;
-      transform: translate(-50%, -50%) rotate(-12deg);
-      border: 1px solid var(--ring);
-      border-radius: 999px;
-      pointer-events: none;
-      opacity: 0.9;
-    }
-    .site-strip .logo-wrap::after {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 118%;
-      height: 26%;
-      transform: translate(-50%, -50%) rotate(-12deg);
-      border: 1px solid rgba(255, 215, 232, 0.10);
-      border-radius: 999px;
-      pointer-events: none;
-    }
-    .site-logo {
+    .hero-logo {
       display: block;
-      height: 64px;
-      width: auto;
-      position: relative;
-      filter: drop-shadow(0 4px 18px rgba(255, 46, 126, 0.22));
+      width: clamp(220px, 32vw, 320px);
+      height: auto;
+      max-width: 100%;
+      animation: heroLogoIn 900ms cubic-bezier(0.16, 1, 0.3, 1) 100ms both;
     }
-    .site-strip .strip-link {
-      font-family: 'Jost', sans-serif;
-      font-size: 13px;
-      font-weight: 500;
-      letter-spacing: 0.08em;
-      color: var(--star);
-      text-decoration: none;
-      text-transform: uppercase;
-      padding: 8px 14px;
-      border: 1px solid rgba(255, 217, 232, 0.22);
-      border-radius: 999px;
-      transition: color 200ms, border-color 200ms, background 200ms;
-      white-space: nowrap;
-    }
-    .site-strip .strip-link:hover {
-      color: #fff;
-      border-color: var(--pink);
-      background: rgba(255, 46, 126, 0.10);
+    @keyframes heroLogoIn {
+      from { opacity: 0; transform: translateY(-14px) scale(0.96); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
     }
     @media (max-width: 640px) {
-      .site-strip.cosmic { padding: 14px 16px; }
-      .site-logo { height: 52px; }
-      .site-strip .strip-link { font-size: 11px; padding: 6px 10px; letter-spacing: 0.06em; }
+      .logo-top { padding: 36px 16px 8px; }
+      .hero-logo { width: clamp(180px, 60vw, 240px); }
     }
 
     /* Success card, cosmic */
@@ -806,9 +752,8 @@
   <div class="wrap">
 
     <!-- ───── SITE HEADER STRIP (cosmic) ───── -->
-    <div class="site-strip cosmic">
-      <span class="logo-wrap"><img src="/logo.png" alt="Outer Snarkness" class="site-logo" /></span>
-      <a href="https://exmormonsnark.com" class="strip-link">Ex-Mormon Snark &#x2197;</a>
+    <div class="logo-top">
+      <img src="/logo.png" alt="Outer Snarkness" class="hero-logo" />
     </div>
 
     <!-- ───── HEADER ───── -->
