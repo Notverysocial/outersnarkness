@@ -4,6 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Outer Snarkness, Women's Retreat Interest Form</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <meta property="og:title" content="Outer Snarkness, Women's Retreat" />
+  <meta property="og:description" content="Girls trip meets ex-Mormon healing meets karaoke. Gathering intel. Nothing booked yet." />
+  <meta property="og:image" content="https://outersnarkness.com/og.png" />
+  <meta property="og:url" content="https://outersnarkness.com" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://outersnarkness.com/og.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
@@ -22,6 +31,12 @@
       --accent: #ff4e81;
       --accent-soft: #ffe2ec;
       --accent-deep: #d8326b;
+      /* Cosmic theme additions (Outer Snarkness v4) */
+      --cosmos: #1A0F33;
+      --cosmos-deep: #0d0820;
+      --star: #FFD9E8;
+      --ring: rgba(255, 215, 232, 0.18);
+      --pink: #FF2E7E;
       --line: #e8dfd0;
       --line-strong: #d4c4a8;
       --shadow: 0 1px 0 rgba(15, 10, 31, 0.04), 0 12px 32px -8px rgba(42, 27, 79, 0.12);
@@ -632,15 +647,168 @@
       .scale { gap: 5px; }
       .scale label span { height: 44px; font-size: 15px; }
     }
+
+    /* ───── Cosmic theme (Outer Snarkness v4) ───── */
+    .cosmic {
+      position: relative;
+      background:
+        radial-gradient(circle at 6% 14%, var(--star) 1.1px, transparent 1.8px),
+        radial-gradient(circle at 18% 62%, var(--star) 0.6px, transparent 1.2px),
+        radial-gradient(circle at 27% 28%, var(--star) 0.9px, transparent 1.5px),
+        radial-gradient(circle at 33% 86%, var(--star) 0.5px, transparent 1.1px),
+        radial-gradient(circle at 41% 18%, var(--pink) 0.8px, transparent 1.3px),
+        radial-gradient(circle at 49% 54%, var(--star) 0.5px, transparent 1.0px),
+        radial-gradient(circle at 56% 80%, var(--star) 1.0px, transparent 1.6px),
+        radial-gradient(circle at 63% 12%, var(--star) 0.5px, transparent 1.0px),
+        radial-gradient(circle at 69% 38%, var(--pink) 0.7px, transparent 1.2px),
+        radial-gradient(circle at 74% 70%, var(--star) 0.9px, transparent 1.5px),
+        radial-gradient(circle at 82% 22%, var(--star) 0.6px, transparent 1.2px),
+        radial-gradient(circle at 88% 56%, var(--star) 1.2px, transparent 1.8px),
+        radial-gradient(circle at 92% 84%, var(--star) 0.5px, transparent 1.0px),
+        radial-gradient(circle at 96% 32%, var(--star) 0.7px, transparent 1.3px),
+        radial-gradient(circle at 11% 92%, var(--star) 0.8px, transparent 1.4px),
+        radial-gradient(circle at 22% 8%, var(--star) 0.5px, transparent 1.0px),
+        radial-gradient(circle at 38% 44%, var(--star) 0.5px, transparent 1.0px),
+        radial-gradient(circle at 52% 24%, var(--star) 0.8px, transparent 1.4px),
+        radial-gradient(circle at 78% 92%, var(--pink) 0.6px, transparent 1.1px),
+        radial-gradient(circle at 86% 8%, var(--star) 0.5px, transparent 1.0px),
+        linear-gradient(180deg, var(--cosmos) 0%, var(--cosmos-deep) 100%);
+      background-size: 100% 100%;
+      color: var(--cream, #FAF6F0);
+    }
+
+    /* Site header strip, cosmic version */
+    .site-strip.cosmic {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px 22px;
+      border: 1px solid rgba(255, 217, 232, 0.12);
+      border-radius: 18px;
+      margin-bottom: 36px;
+      box-shadow: 0 12px 36px -16px rgba(0,0,0,0.45);
+      overflow: hidden;
+    }
+    .site-strip .logo-wrap {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 14px;
+    }
+    .site-strip .logo-wrap::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 140%;
+      height: 38%;
+      transform: translate(-50%, -50%) rotate(-12deg);
+      border: 1px solid var(--ring);
+      border-radius: 999px;
+      pointer-events: none;
+      opacity: 0.9;
+    }
+    .site-strip .logo-wrap::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 118%;
+      height: 26%;
+      transform: translate(-50%, -50%) rotate(-12deg);
+      border: 1px solid rgba(255, 215, 232, 0.10);
+      border-radius: 999px;
+      pointer-events: none;
+    }
+    .site-logo {
+      display: block;
+      height: 64px;
+      width: auto;
+      position: relative;
+      filter: drop-shadow(0 4px 18px rgba(255, 46, 126, 0.22));
+    }
+    .site-strip .strip-link {
+      font-family: 'Jost', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: var(--star);
+      text-decoration: none;
+      text-transform: uppercase;
+      padding: 8px 14px;
+      border: 1px solid rgba(255, 217, 232, 0.22);
+      border-radius: 999px;
+      transition: color 200ms, border-color 200ms, background 200ms;
+      white-space: nowrap;
+    }
+    .site-strip .strip-link:hover {
+      color: #fff;
+      border-color: var(--pink);
+      background: rgba(255, 46, 126, 0.10);
+    }
+    @media (max-width: 640px) {
+      .site-strip.cosmic { padding: 14px 16px; }
+      .site-logo { height: 52px; }
+      .site-strip .strip-link { font-size: 11px; padding: 6px 10px; letter-spacing: 0.06em; }
+    }
+
+    /* Success card, cosmic */
+    .thanks.cosmic {
+      background: transparent;
+      border: 1px solid rgba(255, 217, 232, 0.14);
+      box-shadow: 0 24px 64px -18px rgba(0,0,0,0.55);
+      color: var(--cream, #FAF6F0);
+    }
+    .thanks.cosmic::before {
+      background:
+        radial-gradient(420px 320px at 88% 12%, rgba(255, 46, 126, 0.14), transparent 70%),
+        radial-gradient(520px 380px at 8% 92%, rgba(255, 215, 232, 0.06), transparent 70%);
+    }
+    .thanks.cosmic .planet-glyph {
+      position: absolute;
+      right: -40px;
+      bottom: -40px;
+      width: 220px;
+      height: 220px;
+      opacity: 0.12;
+      pointer-events: none;
+      transform: rotate(-8deg);
+    }
+    .thanks.cosmic h2 { color: #fff; }
+    .thanks.cosmic h2 .accent { color: var(--pink); }
+    .thanks.cosmic p { color: rgba(250, 246, 240, 0.78); }
+    .thanks.cosmic .orbit-line {
+      margin-top: 14px;
+      font-size: 13px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--star);
+      font-weight: 500;
+    }
+    .thanks.cosmic .confirm-id {
+      color: rgba(255, 217, 232, 0.55) !important;
+    }
+
+    /* Footer, cosmic */
+    .footer.cosmic {
+      color: rgba(255, 217, 232, 0.70);
+      padding: 28px 22px;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 217, 232, 0.10);
+      margin-top: 56px;
+    }
+
   </style>
 </head>
 <body>
   <div class="wrap">
 
-    <!-- ───── SITE HEADER STRIP ───── -->
-    <div class="site-strip" style="display:flex;align-items:center;justify-content:space-between;padding:0 0 28px;border-bottom:1px solid var(--line);margin-bottom:36px;font-family:'Jost',sans-serif;">
-      <span style="font-size:20px;font-weight:600;letter-spacing:0.18em;color:var(--purple);text-transform:uppercase;">Outer Snarkness</span>
-      <a href="https://exmormonsnark.com" style="font-size:14px;font-weight:500;letter-spacing:0.04em;color:var(--purple);text-decoration:underline;text-underline-offset:4px;">Ex-Mormon Snark &#x2197;</a>
+    <!-- ───── SITE HEADER STRIP (cosmic) ───── -->
+    <div class="site-strip cosmic">
+      <span class="logo-wrap"><img src="/logo.png" alt="Outer Snarkness" class="site-logo" /></span>
+      <a href="https://exmormonsnark.com" class="strip-link">Ex-Mormon Snark &#x2197;</a>
     </div>
 
     <!-- ───── HEADER ───── -->
@@ -839,14 +1007,16 @@
       <p style="text-align:center;margin-top:14px;color:var(--ink-soft);font-size:12px;letter-spacing:0.04em;">Anonymous unless you give us your email. We'll never share it.</p>
     </form>
 
-    <!-- ───── THANK-YOU ───── -->
-    <div class="thanks" id="thanks">
+    <!-- ───── THANK-YOU (cosmic) ───── -->
+    <div class="thanks cosmic" id="thanks">
+      <img src="/logo.png" alt="" aria-hidden="true" class="planet-glyph" />
       <div class="heart-big">💜</div>
       <h2>You're <span class="accent">in.</span></h2>
       <p>Thanks for spending three minutes on this. You helped shape what the first retreat will actually be.</p>
+      <p class="orbit-line">You've entered the orbit.</p>
     </div>
 
-    <p class="footer">Outer Snarkness · A Kirsten &amp; Megan project · An Ex-Mormon Snark joint</p>
+    <p class="footer cosmic">Outer Snarkness · A Kirsten &amp; Megan project · An Ex-Mormon Snark joint</p>
   </div>
 
   <script>
