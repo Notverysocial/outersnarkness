@@ -688,7 +688,7 @@
       z-index: 1;
       opacity: 0;
       will-change: transform, opacity;
-      filter: drop-shadow(0 6px 12px rgba(42, 27, 79, 0.08));
+      filter: drop-shadow(0 4px 10px rgba(42, 27, 79, 0.35)) drop-shadow(0 0 2px rgba(42, 27, 79, 0.4));
       transition: none;
     }
     .ghost-garment.s-set    { width: 92px; }
@@ -1126,7 +1126,7 @@
         const startRot = rnd(-30, 30);
         const endRot   = startRot + rnd(-90, 90);
         const dur = rnd(13, 22);
-        const peak = (opts && opts.peakOpacity) || rnd(0.16, 0.26);
+        const peak = (opts && opts.peakOpacity) || rnd(0.32, 0.48);
         img.style.setProperty('--from-x', startX + 'px');
         img.style.setProperty('--from-y', startY + 'px');
         img.style.setProperty('--to-x',   endX + 'px');
@@ -1158,7 +1158,7 @@
               !m.target.dataset.garmentFired) {
             m.target.dataset.garmentFired = '1';
             if (Math.random() < 0.13) {
-              setTimeout(() => spawn({ peakOpacity: 0.18 }), rnd(220, 600));
+              setTimeout(() => spawn({ peakOpacity: 0.28 }), rnd(220, 600));
             }
           }
         });
