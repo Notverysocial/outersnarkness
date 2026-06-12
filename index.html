@@ -1028,7 +1028,7 @@
           observer.unobserve(entry.target);
         }
       });
-    }, { threshold: 0, rootMargin: '0px 0px -80px 0px' });
+    }, { threshold: 0.1 });
 
     document.querySelectorAll('.scroll-card').forEach((el, i) => {
       el.classList.add('scroll-hidden');
@@ -1047,10 +1047,11 @@
         const vh = window.innerHeight || document.documentElement.clientHeight;
         document.querySelectorAll('.scroll-hidden:not(.visible)').forEach(el => {
           const rect = el.getBoundingClientRect();
-          // Only reveal cards that are MEANINGFULLY inside the initial viewport
-          // (at least 80px from the bottom edge of the viewport, matching the observer's rootMargin).
-          // Cards waiting below the fold stay hidden until the user scrolls.
-          if (rect.top < (vh - 80) && rect.bottom > 0) {
+          // Only reveal cards that are MEANINGFULLY in the initial viewport at load.
+          // Cards below the fold stay hidden until the user scrolls down to them.
+          const inView = rect.top < vh && rect.bottom > 0;
+          const significantlyIn = inView && (Math.min(rect.bottom, vh) - Math.max(rect.top, 0)) / rect.height > 0.1;
+          if (significantlyIn) {
             el.classList.add('visible');
             observer.unobserve(el);
           }
