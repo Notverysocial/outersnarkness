@@ -680,6 +680,39 @@
       color: var(--cream, #FAF6F0);
     }
 
+
+    /* Floating garments: irreverent ambient touch, infrequent and subtle */
+    .ghost-garment {
+      position: fixed;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0;
+      will-change: transform, opacity;
+      filter: drop-shadow(0 6px 12px rgba(42, 27, 79, 0.08));
+      transition: none;
+    }
+    .ghost-garment.s-set    { width: 92px; }
+    .ghost-garment.s-top    { width: 70px; }
+    .ghost-garment.s-bottom { width: 64px; }
+    @media (max-width: 640px) {
+      .ghost-garment.s-set    { width: 64px; }
+      .ghost-garment.s-top    { width: 50px; }
+      .ghost-garment.s-bottom { width: 46px; }
+    }
+    .ghost-garment.drifting {
+      animation: garmentDrift var(--dur, 14s) linear forwards;
+    }
+    @keyframes garmentDrift {
+      0%   { opacity: 0;    transform: translate(var(--from-x), var(--from-y)) rotate(var(--start-rot)) scale(0.85); }
+      8%   { opacity: var(--peak-opacity, 0.22); }
+      92%  { opacity: var(--peak-opacity, 0.22); }
+      100% { opacity: 0;    transform: translate(var(--to-x),   var(--to-y))   rotate(var(--end-rot))   scale(1); }
+    }
+    /* Reduced motion: hide entirely */
+    @media (prefers-reduced-motion: reduce) {
+      .ghost-garment { display: none !important; }
+    }
+
     /* Logo at top, centered, transparent on cream */
     .logo-top {
       display: flex;
@@ -1068,6 +1101,72 @@
         });
       }, 30000);
     }
+
+    // Floating garments: subtle ambient gag (Mormon garment easter egg)
+    (function setupGhostGarments() {
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const variants = ['s-set', 's-top', 's-bottom'];
+      const sources = {
+        's-set': '/garment-set.png',
+        's-top': '/garment-top.png',
+        's-bottom': '/garment-bottom.png'
+      };
+      function rnd(min, max) { return Math.random() * (max - min) + min; }
+      function spawn(opts) {
+        const variant = variants[Math.floor(Math.random() * variants.length)];
+        const img = document.createElement('img');
+        img.src = sources[variant];
+        img.alt = '';
+        img.className = 'ghost-garment ' + variant;
+        const fromLeft = Math.random() < 0.5;
+        const startX = fromLeft ? -160 : window.innerWidth + 160;
+        const endX   = fromLeft ? window.innerWidth + 160 : -160;
+        const startY = rnd(0.1, 0.85) * window.innerHeight;
+        const endY   = startY + rnd(-180, 180);
+        const startRot = rnd(-30, 30);
+        const endRot   = startRot + rnd(-90, 90);
+        const dur = rnd(13, 22);
+        const peak = (opts && opts.peakOpacity) || rnd(0.16, 0.26);
+        img.style.setProperty('--from-x', startX + 'px');
+        img.style.setProperty('--from-y', startY + 'px');
+        img.style.setProperty('--to-x',   endX + 'px');
+        img.style.setProperty('--to-y',   endY + 'px');
+        img.style.setProperty('--start-rot', startRot + 'deg');
+        img.style.setProperty('--end-rot',   endRot + 'deg');
+        img.style.setProperty('--dur', dur + 's');
+        img.style.setProperty('--peak-opacity', peak);
+        img.style.left = '0';
+        img.style.top  = '0';
+        document.body.appendChild(img);
+        requestAnimationFrame(() => img.classList.add('drifting'));
+        img.addEventListener('animationend', () => img.remove(), { once: true });
+      }
+      // Wait for the page to settle, then spawn at irregular intervals
+      // so it never feels mechanical. Range 28 to 52 seconds between drifts.
+      function loop() {
+        const next = rnd(28000, 52000);
+        setTimeout(() => { spawn(); loop(); }, next);
+      }
+      setTimeout(() => loop(), rnd(4500, 8500));
+      // Easter egg: 1 in 8 card reveals spawns an extra drifter alongside the
+      // just-revealed card. We listen for the .visible class arriving.
+      const cardObserver = new MutationObserver(muts => {
+        muts.forEach(m => {
+          if (m.type === 'attributes' && m.attributeName === 'class' &&
+              m.target.classList.contains('visible') &&
+              m.target.classList.contains('scroll-hidden') &&
+              !m.target.dataset.garmentFired) {
+            m.target.dataset.garmentFired = '1';
+            if (Math.random() < 0.13) {
+              setTimeout(() => spawn({ peakOpacity: 0.18 }), rnd(220, 600));
+            }
+          }
+        });
+      });
+      document.querySelectorAll('.scroll-card').forEach(c => {
+        cardObserver.observe(c, { attributes: true, attributeFilter: ['class'] });
+      });
+    })();
 
     // ───── "Other" reveal ─────
     otherTrigger.querySelector('input').addEventListener('change', e => {
